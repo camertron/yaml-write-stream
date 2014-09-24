@@ -111,8 +111,9 @@ class YamlWriteStream
 
   class StatefulMappingWriter < StatefulWriter
     def after_initialize
+      # anchor, tag, implicit, style
       emitter.start_mapping(
-        nil, nil, true, Psych::Nodes::Sequence::ANY
+        nil, nil, true, Psych::Nodes::Sequence::BLOCK
       )
     end
 
@@ -144,13 +145,20 @@ class YamlWriteStream
 
   class StatefulSequenceWriter < StatefulWriter
     def after_initialize
+      # anchor, tag, implicit, style
       emitter.start_sequence(
-        nil, nil, true, Psych::Nodes::Sequence::ANY
+        nil, nil, true, Psych::Nodes::Sequence::BLOCK
       )
     end
 
     def write_element(element)
       write_scalar(element)
+    end
+
+    def write_hash
+    end
+
+    def write_array
     end
 
     def close

@@ -16,7 +16,7 @@ class YamlWriteStream
       emitter.start_stream(convert_encoding(encoding))
 
       # version, tag_directives, implicit
-      emitter.start_document([], nil, true)
+      emitter.start_document([], [], true)
 
       if block_given?
         yield writer = YieldingWriter.new(emitter, stream)
@@ -44,8 +44,10 @@ class YamlWriteStream
           end
         when Fixnum
           encoding
+        when String
+          convert_encoding(Encoding.find(encoding))
         else
-          raise ArgumentError, "encoding must be either an Encoding or a Fixnum."
+          raise ArgumentError, "encoding of type #{encoding.class} is not supported, please provide an Encoding or a Fixnum."
       end
     end
   end
