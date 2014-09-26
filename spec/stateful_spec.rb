@@ -99,14 +99,14 @@ describe YamlWriteStream::YieldingWriter do
   describe '#close_map' do
     it 'raises an error if a map is not currently being written' do
       stream_writer.write_sequence
-      expect(-> { stream_writer.close_map }).to raise_error(YamlWriteStream::NotInMapError)
+      expect(lambda { stream_writer.close_map }).to raise_error(YamlWriteStream::NotInMapError)
     end
   end
 
   describe '#close_sequence' do
     it 'raises an error if a sequence is not currently being written' do
       stream_writer.write_map
-      expect(-> { stream_writer.close_sequence }).to raise_error(YamlWriteStream::NotInSequenceError)
+      expect(lambda { stream_writer.close_sequence }).to raise_error(YamlWriteStream::NotInSequenceError)
     end
   end
 
@@ -117,25 +117,25 @@ describe YamlWriteStream::YieldingWriter do
 
     describe '#write_map' do
       it 'raises an error if eos' do
-        expect(-> { stream_writer.write_map }).to raise_error(YamlWriteStream::EndOfStreamError)
+        expect(lambda { stream_writer.write_map }).to raise_error(YamlWriteStream::EndOfStreamError)
       end
     end
 
     describe '#write_sequence' do
       it 'raises an error if eos' do
-        expect(-> { stream_writer.write_map }).to raise_error(YamlWriteStream::EndOfStreamError)
+        expect(lambda { stream_writer.write_map }).to raise_error(YamlWriteStream::EndOfStreamError)
       end
     end
 
     describe '#write_key_value' do
       it 'raises an error if eos' do
-        expect(-> { stream_writer.write_key_value('abc', 'def') }).to raise_error(YamlWriteStream::EndOfStreamError)
+        expect(lambda { stream_writer.write_key_value('abc', 'def') }).to raise_error(YamlWriteStream::EndOfStreamError)
       end
     end
 
     describe '#write_element' do
       it 'raises an error if eos' do
-        expect(-> { stream_writer.write_element('foo') }).to raise_error(YamlWriteStream::EndOfStreamError)
+        expect(lambda { stream_writer.write_element('foo') }).to raise_error(YamlWriteStream::EndOfStreamError)
       end
     end
   end
