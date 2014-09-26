@@ -1,8 +1,8 @@
 # encoding: UTF-8
 
 class YamlWriteStream
-  class NotInHashError < StandardError; end
-  class NotInArrayError < StandardError; end
+  class NotInMapError < StandardError; end
+  class NotInSequenceError < StandardError; end
   class EndOfStreamError < StandardError; end
 
   class StatefulWriter
@@ -15,6 +15,7 @@ class YamlWriteStream
       @stack = []
       @closed = false
       after_initialize
+      @first = true
     end
 
     def after_initialize
@@ -22,30 +23,35 @@ class YamlWriteStream
     end
 
     def close
+      # psych gets confused if you open a file and don't at least
+      # pretend to write something
+      write_scalar('') if first
+
       until stack.empty?
-        if in_hash?
-          close_hash
+        if in_map?
+          close_map
         else
-          close_array
+          close_sequence
         end
       end
 
       emitter.end_document(true)
       emitter.end_stream
       stream.close
+      @closed = true
     end
 
-    def write_hash(*args)
+    def write_map(*args)
       check_eos
       @first = false
-      current.write_hash(*args) if current
+      current.write_map(*args) if current
       stack.push(StatefulMappingWriter.new(emitter, stream))
     end
 
-    def write_array(*args)
+    def write_sequence(*args)
       check_eos
       @first = false
-      current.write_array(*args) if current
+      current.write_sequence(*args) if current
       stack.push(StatefulSequenceWriter.new(emitter, stream))
     end
 
@@ -65,27 +71,27 @@ class YamlWriteStream
       closed? || (!first && stack.size == 0)
     end
 
-    def in_hash?
-      current ? current.is_hash? : false
+    def in_map?
+      current ? current.is_map? : false
     end
 
-    def in_array?
-      current ? current.is_array? : false
+    def in_sequence?
+      current ? current.is_sequence? : false
     end
 
-    def close_hash
-      if in_hash?
+    def close_map
+      if in_map?
         stack.pop.close
       else
-        raise NotInHashError, 'not currently writing a hash.'
+        raise NotInMapError, 'not currently writing a map.'
       end
     end
 
-    def close_array
-      if in_array?
+    def close_sequence
+      if in_sequence?
         stack.pop.close
       else
-        raise NotInArrayError, 'not currently writing an array.'
+        raise NotInSequenceError, 'not currently writing an sequence.'
       end
     end
 
@@ -117,11 +123,11 @@ class YamlWriteStream
       )
     end
 
-    def write_hash(key)
+    def write_map(key)
       write_scalar(key)
     end
 
-    def write_array(key)
+    def write_sequence(key)
       write_scalar(key)
     end
 
@@ -134,11 +140,11 @@ class YamlWriteStream
       emitter.end_mapping
     end
 
-    def is_hash?
+    def is_map?
       true
     end
 
-    def is_array?
+    def is_sequence?
       false
     end
   end
@@ -155,21 +161,21 @@ class YamlWriteStream
       write_scalar(element)
     end
 
-    def write_hash
+    def write_map
     end
 
-    def write_array
+    def write_sequence
     end
 
     def close
       emitter.end_sequence
     end
 
-    def is_hash?
+    def is_map?
       false
     end
 
-    def is_array?
+    def is_sequence?
       true
     end
   end

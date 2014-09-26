@@ -11,7 +11,7 @@ class YamlWriteStream
       from_stream(handle, encoding, &block)
     end
 
-    def from_stream(stream, encoding)
+    def from_stream(stream, encoding = Psych::Parser::UTF8)
       emitter = Psych::Emitter.new(stream)
       emitter.start_stream(convert_encoding(encoding))
 
@@ -35,9 +35,9 @@ class YamlWriteStream
           case encoding
             when Encoding::UTF_8
               Psych::Parser::UTF8
-            when Encoding::UTF16_BE
+            when Encoding::UTF_16BE
               Psych::Parser::UTF16BE
-            when Encoding::UTF16_LE
+            when Encoding::UTF_16LE
               Psych::Parser::UTF16LE
             else
               raise ArgumentError, "'#{encoding}' encoding is not supported by Psych."

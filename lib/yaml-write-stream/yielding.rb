@@ -2,20 +2,26 @@
 
 class YamlWriteStream
   class YieldingWriter
-    attr_reader :emitter, :stream
+    attr_reader :emitter, :stream, :first
 
     def initialize(emitter, stream)
       @emitter = emitter
       @stream = stream
+      @first = true
     end
 
     def close
+      # psych gets confused if you open a file and don't at least
+      # pretend to write something
+      write_scalar('') if first
       emitter.end_document(true)
       emitter.end_stream
       stream.close
     end
 
-    def write_array
+    def write_sequence
+      @first = false
+
       # anchor, tag, implicit, style
       emitter.start_sequence(
         nil, nil, true, Psych::Nodes::Sequence::ANY
@@ -25,7 +31,9 @@ class YamlWriteStream
       emitter.end_sequence
     end
 
-    def write_hash
+    def write_map
+      @first = false
+
       # anchor, tag, implicit, style
       emitter.start_mapping(
         nil, nil, true, Psych::Nodes::Sequence::ANY
@@ -38,6 +46,8 @@ class YamlWriteStream
     protected
 
     def write_scalar(value)
+      @first = false
+
         # value, anchor, tag, plain, quoted, style
       emitter.scalar(
         value, nil, nil, true, false, Psych::Nodes::Scalar::ANY
@@ -46,17 +56,18 @@ class YamlWriteStream
   end
 
   class YieldingMappingWriter < YieldingWriter
-    def write_hash(key)
+    def write_map(key)
       write_scalar(key)
       super()
     end
 
-    def write_array(key)
+    def write_sequence(key)
       write_scalar(key)
       super()
     end
 
     def write_key_value(key, value)
+      @first = false
       write_scalar(key)
       write_scalar(value)
     end
