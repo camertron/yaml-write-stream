@@ -104,7 +104,7 @@ writer.close
 
 ## Requirements
 
-No external requirements.
+Only Ruby 1.9 or greater is supported (requires the Psych emitter).
 
 ## Running Tests
 
