@@ -68,8 +68,8 @@ writer.in_map?         # => true, currently writing a map
 writer.in_sequence?    # => false, not currently writing a sequence
 writer.eos?            # => false, the stream is open and the outermost map hasn't been closed yet
 
-writer.close_map       # explicitly close the current object
-writer.eos?            # => true, the outermost object has been closed
+writer.close_map       # explicitly close the current map
+writer.eos?            # => true, the outermost map has been closed
 
 writer.write_sequence  # => raises YamlWriteStream::EndOfStreamError
 writer.close_sequence  # => raises YamlWriteStream::NotInArrayError
