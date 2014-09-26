@@ -39,6 +39,7 @@ class YamlWriteStream
       emitter.end_stream
       stream.close
       @closed = true
+      nil
     end
 
     def write_map(*args)
