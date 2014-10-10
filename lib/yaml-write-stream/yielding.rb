@@ -10,13 +10,19 @@ class YamlWriteStream
       @first = true
     end
 
-    def close
+    def flush
       # psych gets confused if you open a file and don't at least
       # pretend to write something
       write_scalar('') if first
       emitter.end_document(true)
       emitter.end_stream
+      nil
+    end
+
+    def close
+      flush
       stream.close
+      nil
     end
 
     def write_sequence

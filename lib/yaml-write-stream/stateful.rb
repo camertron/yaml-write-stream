@@ -22,7 +22,7 @@ class YamlWriteStream
       @first = true
     end
 
-    def close
+    def flush
       # psych gets confused if you open a file and don't at least
       # pretend to write something
       write_scalar('') if first
@@ -37,8 +37,13 @@ class YamlWriteStream
 
       emitter.end_document(true)
       emitter.end_stream
-      stream.close
       @closed = true
+      nil
+    end
+
+    def close
+      flush
+      stream.close
       nil
     end
 

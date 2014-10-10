@@ -99,8 +99,10 @@ Stateful:
 writer = YamlWriteStream.open('path/to/file.yml')
 writer.write_map
 ...
-writer.close
+writer.close  # also closes the underlying stream
 ```
+
+If you'd rather not close the underlying stream, you can call `#flush` instead, which will add necessary closing punctuation but leave the stream open. Once a yaml write stream has been flushed, it should NOT be written to again. Treat flushed streams as if they were closed.
 
 ## Requirements
 
