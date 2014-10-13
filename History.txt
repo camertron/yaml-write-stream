@@ -1,3 +1,11 @@
 == 1.0.0
 
 * Birthday!
+
+== 1.0.1
+
+* Adding flush method to streams.
+
+== 1.0.2
+
+* Flush the underlying stream too.
