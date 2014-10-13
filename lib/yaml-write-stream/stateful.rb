@@ -37,6 +37,7 @@ class YamlWriteStream
 
       emitter.end_document(true)
       emitter.end_stream
+      stream.flush
       @closed = true
       nil
     end
