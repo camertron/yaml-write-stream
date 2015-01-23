@@ -35,6 +35,26 @@ describe YamlWriteStream::YieldingWriter do
       expect(stream_writer).to be_closed
       expect(stream).to be_closed
     end
+
+    it 'quotes empty strings' do
+      stream_writer.write_map
+      stream_writer.write_key_value('foo', '')
+      stream_writer.close
+
+      expect(stream.string).to eq(utf8("foo: \"\"\n"))
+      expect(stream_writer).to be_closed
+      expect(stream).to be_closed
+    end
+
+    it 'writes nils as blank entries' do
+      stream_writer.write_map
+      stream_writer.write_key_value('foo', nil)
+      stream_writer.close
+
+      expect(stream.string).to eq(utf8("foo: \n"))
+      expect(stream_writer).to be_closed
+      expect(stream).to be_closed
+    end
   end
 
   describe '#closed?' do

@@ -54,9 +54,18 @@ class YamlWriteStream
     def write_scalar(value)
       @first = false
 
-        # value, anchor, tag, plain, quoted, style
+      style = if value == ''
+        Psych::Nodes::Scalar::DOUBLE_QUOTED
+      else
+        Psych::Nodes::Scalar::ANY
+      end
+
+      quoted = value == ''
+      value = value ? value : ''
+
+      # value, anchor, tag, plain, quoted, style
       emitter.scalar(
-        value, nil, nil, true, false, Psych::Nodes::Scalar::ANY
+        value, nil, nil, true, quoted, style
       )
     end
   end
