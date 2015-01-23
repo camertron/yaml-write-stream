@@ -9,3 +9,10 @@
 == 1.0.2
 
 * Flush the underlying stream too.
+
+== 1.0.3
+
+* Fixed treatment of nils and blank strings. Nils should be written as blank entries while
+  blank strings should be wrapped in quotes so YAML parsers know to return a blank string
+  instead of a nil. Eg. foo: should parse as {"foo":nil} while foo: "" should parse as
+  {"foo":""}.
