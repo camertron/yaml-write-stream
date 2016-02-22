@@ -114,11 +114,15 @@ class YamlWriteStream
       stack.last
     end
 
-    def write_scalar(value)
+    def write_scalar(value, quote = false)
       style = if value == ''
         Psych::Nodes::Scalar::DOUBLE_QUOTED
       else
-        Psych::Nodes::Scalar::ANY
+        if !quote || !value
+          Psych::Nodes::Scalar::ANY
+        else
+          Psych::Nodes::Scalar::DOUBLE_QUOTED
+        end
       end
 
       quoted = value == ''
@@ -149,7 +153,7 @@ class YamlWriteStream
 
     def write_key_value(key, value)
       write_scalar(key)
-      write_scalar(value)
+      write_scalar(value, true)
     end
 
     def close

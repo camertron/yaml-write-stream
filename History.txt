@@ -16,3 +16,7 @@
   blank strings should be wrapped in quotes so YAML parsers know to return a blank string
   instead of a nil. Eg. foo: should parse as {"foo":nil} while foo: "" should parse as
   {"foo":""}.
+
+== 1.0.4
+
+* Mapping values are now wrapped in double quotes by default
