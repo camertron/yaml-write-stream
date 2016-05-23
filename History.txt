@@ -20,3 +20,11 @@
 == 1.0.4
 
 * Mapping values are now wrapped in double quotes by default
+
+== 2.0.0
+
+* Scalars are now dumped more consistently. Strings always have quotes, numbers never do.
+  This should address discrepancies that arise when dumping a string of digits. Previously,
+  the string would have been dumped either with "non-specific" tag notation (i.e. "!") or
+  without quotes. Both result in an integer when parsed. Now if you want to dump a number
+  as a string, convert it to a string before serializing.
