@@ -2,12 +2,14 @@
 
 class YamlWriteStream
   class YieldingWriter
-    attr_reader :emitter, :stream, :first
+    attr_reader :emitter, :stream, :first, :closed
+    alias_method :closed?, :closed
 
     def initialize(emitter, stream)
       @emitter = emitter
       @stream = stream
       @first = true
+      @closed = false
     end
 
     def flush
@@ -22,6 +24,7 @@ class YamlWriteStream
     def close
       flush
       stream.close
+      @closed = true
       nil
     end
 
@@ -30,7 +33,7 @@ class YamlWriteStream
 
       # anchor, tag, implicit, style
       emitter.start_sequence(
-        nil, nil, true, Psych::Nodes::Sequence::ANY
+        nil, nil, false, Psych::Nodes::Sequence::ANY
       )
 
       yield YieldingSequenceWriter.new(emitter, stream)
@@ -42,7 +45,7 @@ class YamlWriteStream
 
       # anchor, tag, implicit, style
       emitter.start_mapping(
-        nil, nil, true, Psych::Nodes::Sequence::ANY
+        nil, nil, false, Psych::Nodes::Sequence::ANY
       )
 
       yield YieldingMappingWriter.new(emitter, stream)
@@ -52,25 +55,38 @@ class YamlWriteStream
     protected
 
     def write_scalar(value, quote = false)
-      @first = false
+      case value
+        when Numeric
+          write_numeric_scalar(value)
+        when NilClass
+          write_nil_scalar
+        else
+          write_string_scalar(value.to_s, quote)
+      end
+    end
 
-      style = if value == ''
+    def write_string_scalar(value, quote = false)
+      style = if quote
         Psych::Nodes::Scalar::DOUBLE_QUOTED
       else
-        if !quote || !value
-          Psych::Nodes::Scalar::ANY
-        else
-          Psych::Nodes::Scalar::DOUBLE_QUOTED
-        end
+        Psych::Nodes::Scalar::PLAIN
       end
-
-      quoted = value == ''
-      value = value ? value : ''
 
       # value, anchor, tag, plain, quoted, style
       emitter.scalar(
-        value, nil, nil, true, quoted, style
+        value, nil, nil, true, true, style
       )
+    end
+
+    def write_numeric_scalar(value)
+      # value, anchor, tag, plain, quoted, style
+      emitter.scalar(
+        value.to_s, nil, nil, true, false, Psych::Nodes::Scalar::PLAIN
+      )
+    end
+
+    def write_nil_scalar
+      write_string_scalar('')
     end
   end
 

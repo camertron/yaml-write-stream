@@ -3,7 +3,7 @@
 require 'rspec'
 require 'yaml-write-stream'
 require 'shared_examples'
-require 'pry-nav'
+require 'pry-byebug'
 
 RSpec.configure do |config|
   config.mock_with :rr

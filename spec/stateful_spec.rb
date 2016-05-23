@@ -31,7 +31,17 @@ describe YamlWriteStream::YieldingWriter do
       stream_writer.write_key_value('def', 'ghi')
       stream_writer.close
 
-      expect(stream.string).to eq(utf8("- abc\n- def: ! \"ghi\"\n"))
+      expect(stream.string).to eq(utf8("- abc\n- def: \"ghi\"\n"))
+      expect(stream_writer).to be_closed
+      expect(stream).to be_closed
+    end
+
+    it 'dumps numbers without quotes and without non-specific (implicit) tag notation' do
+      stream_writer.write_map
+      stream_writer.write_key_value('abc', 7)
+      stream_writer.close
+
+      expect(stream.string).to eq(utf8("abc: 7\n"))
       expect(stream_writer).to be_closed
       expect(stream).to be_closed
     end

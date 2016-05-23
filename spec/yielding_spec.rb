@@ -29,6 +29,31 @@ describe YamlWriteStream::YieldingWriter do
       expect(stream).to be_closed
     end
 
+    it 'correctly writes to and closes the stream without non-specific (implicit) tag notation' do
+      stream_writer.write_sequence do |seq_writer|
+        seq_writer.write_element('abc')
+        seq_writer.write_map do |map_writer|
+          map_writer.write_key_value('def', 'ghi')
+        end
+      end
+
+      stream_writer.close
+      expect(stream.string).to eq(utf8("- abc\n- def: \"ghi\"\n"))
+      expect(stream_writer).to be_closed
+      expect(stream).to be_closed
+    end
+
+    it 'dumps numbers without quotes and without non-specific (implicit) tag notation' do
+      stream_writer.write_map do |map_writer|
+        map_writer.write_key_value('abc', 7)
+      end
+
+      stream_writer.close
+      expect(stream.string).to eq(utf8("abc: 7\n"))
+      expect(stream_writer).to be_closed
+      expect(stream).to be_closed
+    end
+
     it 'quotes empty strings' do
       stream_writer.write_map do |map_writer|
         map_writer.write_key_value('foo', '')
