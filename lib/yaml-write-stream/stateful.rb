@@ -167,7 +167,8 @@ class YamlWriteStream
     end
 
     def write_key_value(key, value)
-      write_scalar(key)
+      quote_key = !!(key =~ /\A\d+\z/)
+      write_scalar(key, quote_key)
       write_scalar(value, true)
     end
 

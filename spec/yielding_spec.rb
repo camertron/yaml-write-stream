@@ -71,5 +71,13 @@ describe YamlWriteStream::YieldingWriter do
       stream_writer.close
       expect(stream.string).to eq("foo: \n")
     end
+
+    it 'quotes numeric string keys' do
+      stream_writer.write_map do |map_writer|
+        stream_writer.write_key_value('110', 'foo')
+      end
+
+      expect(stream.string).to eq(utf8("\"110\": \"foo\"\n"))
+    end
   end
 end
