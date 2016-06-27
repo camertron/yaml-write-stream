@@ -28,3 +28,7 @@
   the string would have been dumped either with "non-specific" tag notation (i.e. "!") or
   without quotes. Both result in an integer when parsed. Now if you want to dump a number
   as a string, convert it to a string before serializing.
+
+== 2.0.1
+
+* Quote numeric string keys.
