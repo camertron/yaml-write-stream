@@ -32,3 +32,7 @@
 == 2.0.1
 
 * Quote numeric string keys.
+
+== 2.0.2
+
+* Quote sequence values.

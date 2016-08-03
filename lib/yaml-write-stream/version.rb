@@ -1,5 +1,5 @@
 # encoding: UTF-8
 
 class YamlWriteStream
-  VERSION = '2.0.1'
+  VERSION = '2.0.2'
 end
