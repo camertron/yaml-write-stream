@@ -111,7 +111,7 @@ class YamlWriteStream
 
   class YieldingSequenceWriter < YieldingWriter
     def write_element(element)
-      write_scalar(element)
+      write_scalar(element, true)
     end
   end
 end

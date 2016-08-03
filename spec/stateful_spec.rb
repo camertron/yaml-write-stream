@@ -31,7 +31,7 @@ describe YamlWriteStream::YieldingWriter do
       stream_writer.write_key_value('def', 'ghi')
       stream_writer.close
 
-      expect(stream.string).to eq(utf8("- abc\n- def: \"ghi\"\n"))
+      expect(stream.string).to eq(utf8("- \"abc\"\n- def: \"ghi\"\n"))
       expect(stream_writer).to be_closed
       expect(stream).to be_closed
     end

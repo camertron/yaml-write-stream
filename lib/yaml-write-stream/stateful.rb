@@ -194,7 +194,7 @@ class YamlWriteStream
     end
 
     def write_element(element)
-      write_scalar(element)
+      write_scalar(element, true)
     end
 
     def write_map
